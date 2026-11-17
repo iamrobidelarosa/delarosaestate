@@ -1,0 +1,149 @@
+{
+  "updated_at": "2026-11-16T20:58:11-05:00",
+  "agents": {
+    "mooji": {
+      "name": "Mooji",
+      "role": "Main Butler & Chief of Staff",
+      "status": "active",
+      "last_task": "Oversaw Iris's mansion redesign and recorded the daily Bible, diet, and exercise briefing baseline",
+      "last_note": "[[04-Dev-and-Design/3d-living-estate-spec]]",
+      "timestamp": "2026-11-16T20:58:11-05:00"
+    },
+    "cook": {
+      "name": "Remy",
+      "role": "Personal Cook & Kitchen Manager",
+      "status": "active",
+      "last_task": "Hosting staff at Culinary Pavilion & Pantry; serving artisan breakfast and refreshments",
+      "last_note": "[[AGENTS]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "nutritionist": {
+      "name": "Sage",
+      "role": "Nutritionist & Macro Specialist",
+      "status": "active",
+      "last_task": "Blending fresh cold-pressed juices and nutrient snacks in the estate pantry for the team",
+      "last_note": "[[AGENTS]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "gym-instructor": {
+      "name": "Atlas",
+      "role": "Personal Gym Instructor & Strength Coach",
+      "status": "active",
+      "last_task": "Leading open gym, mobility stretches, and strength circuits for staff at Fitness Arena",
+      "last_note": "[[AGENTS]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "financial-advisor": {
+      "name": "Sterling",
+      "role": "Financial Advisor & Wealth Strategist",
+      "status": "waiting",
+      "last_task": "Enjoying an espresso in the pantry while maintaining strict fiduciary hold on transactions",
+      "last_note": "[[03-Finance/debt-elimination-master-plan]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "code-expert": {
+      "name": "Turing",
+      "role": "Code Expert & Lead Programmer",
+      "status": "active",
+      "last_task": "Deployed Lively Simulation Engine v2.1 with waypoint walking, barbell presses, and billboard badges",
+      "last_note": "[[00-Butler-Dashboard/estate3d.js]]",
+      "timestamp": "2026-11-16T08:48:00-05:00"
+    },
+    "ui-designer": {
+      "name": "Iris",
+      "role": "UI/UX Designer & Visual Architect",
+      "status": "idle",
+      "last_task": "Rebuilt the 3D estate as a connected mansion with distinct rooms, doorways, an entrance, and room-aware navigation",
+      "last_note": "[[04-Dev-and-Design/3d-living-estate-spec]]",
+      "timestamp": "2026-11-16T20:58:11-05:00"
+    },
+    "system-administrator": {
+      "name": "Argus",
+      "role": "System Administrator & Operations Lead",
+      "status": "active",
+      "last_task": "Jogging on the treadmill at Fitness Arena while monitoring server telemetry on his tactical watch",
+      "last_note": "[[04-Dev-and-Design/household-command-center-spec]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "database-administrator": {
+      "name": "Dexter",
+      "role": "Database Administrator & Data Architect",
+      "status": "idle",
+      "last_task": "Enjoying brunch and fresh pastries with Remy on the Culinary Pavilion terrace",
+      "last_note": "[[00-Butler-Dashboard/status.json]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "network-administrator": {
+      "name": "Nexus",
+      "role": "Network Administrator & Connectivity Engineer",
+      "status": "idle",
+      "last_task": "Walking the scenic estate perimeter while testing high-speed wireless mesh coverage",
+      "last_note": "[[00-Butler-Dashboard/status.json]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "composer": {
+      "name": "Lyra",
+      "role": "Composer & Lyricist",
+      "status": "idle",
+      "last_task": "Strolling through the gardens humming new melodies, picking fresh mint with Sage",
+      "last_note": "[[AGENTS]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "spiritual-advisor": {
+      "name": "Bodhi",
+      "role": "Spiritual Advisor & Mindfulness Guide",
+      "status": "idle",
+      "last_task": "Welcoming staff in the Zen Sanctuary with warm herbal infusions and mindful breathing",
+      "last_note": "[[AGENTS]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "email-manager": {
+      "name": "Hermes",
+      "role": "Executive Mail Secretary & Inbox Manager",
+      "status": "idle",
+      "last_task": "Enjoying breakfast with Remy at Culinary Pavilion, heading to Atlas for circuit training",
+      "last_note": "[[07-Inbox-and-Mail/daily_inbox_check.ps1]]",
+      "timestamp": "2026-11-16T08:42:30-05:00"
+    },
+    "travel-buddy": {
+      "name": "Marco",
+      "role": "Personal Travel Buddy & Culinary Navigator",
+      "status": "active",
+      "last_task": "Commissioned as Travel Buddy; scouting weekend getaway routes and culinary food spots",
+      "last_note": "[[08-Travel-and-Exploration/travel-command-and-itineraries]]",
+      "timestamp": "2026-11-16T08:52:00-05:00"
+    },
+    "domino-administrator": {
+      "name": "Dorian",
+      "role": "HCL Domino and Notes Administrator",
+      "status": "idle",
+      "last_task": "Ready to administer HCL Domino and Notes using the official 14.5.1 documentation",
+      "last_note": "[[.agents/agents/domino-administrator]]",
+      "timestamp": "2026-11-16T16:05:13-05:00"
+    },
+    "knowledge-article-author": {
+      "name": "Quill",
+      "role": "Knowledge Article Author",
+      "status": "idle",
+      "last_task": "Ready to draft and first-publish customer-focused articles using the supplied templates and writing guide",
+      "last_note": "[[.agents/agents/knowledge-article-author]]",
+      "timestamp": "2026-11-16T16:05:13-05:00"
+    },
+    "knowledge-article-reviewer": {
+      "name": "Verity",
+      "role": "Knowledge Article Reviewer",
+      "status": "idle",
+      "last_task": "Ready to technically review articles and return approvals or detailed draft rejections",
+      "last_note": "[[.agents/agents/knowledge-article-reviewer]]",
+      "timestamp": "2026-11-16T16:05:13-05:00"
+    },
+    "knowledge-article-publisher": {
+      "name": "Scribe",
+      "role": "Knowledge Article Publisher",
+      "status": "idle",
+      "last_task": "Ready to edit publishing requests and approve publication or return detailed rejections to draft",
+      "last_note": "[[.agents/agents/knowledge-article-publisher]]",
+      "timestamp": "2026-11-16T16:05:13-05:00"
+    }
+  }
+}

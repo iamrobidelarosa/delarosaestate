@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Household Command Center — Dela Rosa Residence</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            obsidian: {
+              base: '#080B11',
+              card: 'rgba(17, 24, 39, 0.72)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              hover: 'rgba(99, 102, 241, 0.35)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Custom Glassmorphism & Cyber Luxe Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-[#080B11] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Ambient Background Lighting -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="ambient-glow -top-40 -left-40 bg-indigo-900/20"></div>
+    <div class="ambient-glow top-1/3 -right-40 bg-purple-900/15"></div>
+    <div class="ambient-glow -bottom-40 left-1/3 bg-emerald-900/10"></div>
+  </div>
+
+  <!-- Header Bar -->
+  <header id="header-bar" class="sticky top-0 z-50 border-b border-white/10 bg-slate-950/80 backdrop-blur-xl transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Left: Estate Branding & Live Beacon -->
+      <div class="flex items-center space-x-3.5">
+        <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 text-indigo-400 shadow-lg shadow-indigo-500/10">
+          <!-- Estate Crest SVG -->
+          <svg class="w-5 h-5 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path d="M12 6l3 6-3 3-3-3 3-6z"/>
+          </svg>
+          <span class="absolute -top-1 -right-1 flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-base sm:text-lg font-bold tracking-wider text-white uppercase font-sans">Dela Rosa Residence</h1>
+            <span class="px-2 py-0.5 text-[10px] font-mono tracking-wider uppercase font-semibold rounded bg-indigo-500/20 border border-indigo-500/40 text-indigo-300">Command</span>
+          </div>
+          <p class="text-xs text-slate-400 font-mono flex items-center space-x-1.5">
+            <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Live Household Telemetry</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Center: Dynamic Status Counter Pills -->
+      <div class="flex items-center space-x-2 sm:space-x-3 bg-slate-900/60 p-1.5 rounded-xl border border-white/5 backdrop-blur-md">
+        <div id="counter-active" class="flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span id="count-active" class="font-mono font-bold text-sm">--</span>
+          <span class="hidden sm:inline text-emerald-300/80">Active</span>
+        </div>
+
+        <div id="counter-waiting" class="flex items-center space-x-2 px-3 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold">
+          <span class="h-2 w-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="count-waiting" class="font-mono font-bold text-sm">--</span>
+          <span class="hidden sm:inline text-amber-300/80">Waiting</span>
+        </div>
+
+        <div id="counter-idle" class="flex items-center space-x-2 px-3 py-1 rounded-lg bg-slate-700/20 border border-slate-600/30 text-slate-400 text-xs font-semibold">
+          <span class="h-2 w-2 rounded-full bg-slate-500"></span>
+          <span id="count-idle" class="font-mono font-bold text-sm">--</span>
+          <span class="hidden sm:inline text-slate-400">Idle</span>
+        </div>
+      </div>
+
+      <!-- Right: Live Digital Clock & Auto-Sync Controls -->
+      <div class="flex items-center space-x-4">
+        <div class="text-right hidden md:block">
+          <div id="live-clock" class="text-sm lg:text-base font-bold font-mono text-white tracking-widest">--:--:-- --</div>
+          <div id="live-date" class="text-[11px] text-slate-400 font-mono tracking-tight">Loading date...</div>
+        </div>
+
+        <!-- Sync Gauge & Manual Trigger -->
+        <div class="flex items-center space-x-2.5 pl-2 border-l border-white/10">
+          <button id="btn-manual-sync" title="Trigger instant refresh from status.json" class="group flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/40 text-slate-300 hover:text-white transition-all duration-200 text-xs font-mono">
+            <svg id="sync-icon" class="w-3.5 h-3.5 transition-transform duration-500 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+            </svg>
+            <span class="hidden sm:inline font-sans">Sync</span>
+            <span id="countdown-label" class="text-[10px] text-slate-400 font-mono">(<span id="sync-seconds">3</span>s)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="relative z-10 flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+    <!-- Coordinator Tier: Mooji Command Deck -->
+    <section aria-label="Coordinator Deck">
+      <div id="mooji-deck" class="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950/40 via-slate-900/80 to-purple-950/30 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300">
+        <!-- Ambient Top Accent Gradient -->
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-400"></div>
+
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          
+          <!-- Identity & Monogram -->
+          <div class="flex items-start sm:items-center space-x-4 min-w-[280px]">
+            <div class="relative flex-shrink-0">
+              <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 p-0.5 shadow-xl shadow-indigo-500/20">
+                <div class="w-full h-full rounded-2xl bg-slate-950/90 flex flex-col items-center justify-center border border-indigo-400/30">
+                  <span class="text-2xl select-none">👑</span>
+                  <span class="text-[9px] font-mono tracking-widest font-black text-amber-400 uppercase mt-0.5">CHIEF</span>
+                </div>
+              </div>
+              <span id="mooji-avatar-ping" class="absolute -bottom-1 -right-1 flex h-4 w-4">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 border-2 border-slate-950"></span>
+              </span>
+            </div>
+
+            <div>
+              <div class="flex items-center space-x-2.5">
+                <h2 id="mooji-name" class="text-xl sm:text-2xl font-black text-white tracking-wide">Mooji</h2>
+                <span id="mooji-badge" class="px-2.5 py-0.5 text-xs font-mono font-bold tracking-wider uppercase rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center space-x-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="mooji-status-text">ACTIVE</span>
+                </span>
+              </div>
+              <p class="text-xs sm:text-sm font-semibold tracking-wider text-indigo-300 uppercase font-sans mt-0.5">
+                Main Butler & Chief of Staff
+              </p>
+              <p class="text-xs text-slate-400 italic mt-0.5 max-w-sm">
+                "Coordinating household operations and specialist dispatch"
+              </p>
+            </div>
+          </div>
+
+          <!-- Current Task Directive Box -->
+          <div class="flex-1 w-full bg-slate-950/70 border border-white/10 rounded-xl p-4 shadow-inner">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-white/5">
+              <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-1.5">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                </svg>
+                <span>Current Directive & System Focus</span>
+              </span>
+              <span id="mooji-updated-time" class="text-[11px] font-mono text-slate-400" title="Last timestamp">Just now</span>
+            </div>
+            <p id="mooji-task" class="text-sm text-slate-200 leading-relaxed font-normal">
+              Loading current directive from coordinator...
+            </p>
+          </div>
+
+          <!-- Obsidian Bridge & Quick Link Actions -->
+          <div class="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 w-full lg:w-auto min-w-[200px]">
+            <div class="text-left lg:text-right w-full">
+              <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Active Artifact</div>
+              <div class="flex items-center lg:justify-end space-x-2">
+                <a id="mooji-wikilink-tag" href="#" class="wikilink-chip" title="Click to launch in Obsidian">
+                  <span class="text-indigo-400 mr-1 font-mono text-xs">[[</span>
+                  <span id="mooji-wikilink-text">AGENTS</span>
+                  <span class="text-indigo-400 ml-1 font-mono text-xs">]]</span>
+                </a>
+              </div>
+            </div>
+
+            <a id="mooji-obsidian-action" href="#" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all duration-200 group">
+              <svg class="w-3.5 h-3.5 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+              </svg>
+              <span>Open in Obsidian</span>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3D Living Estate Canvas Section -->
+    <section id="estate-3d-wrapper" aria-label="3D Living Estate Mansion" class="relative rounded-2xl border border-white/10 bg-slate-950/80 shadow-2xl overflow-hidden backdrop-blur-xl">
+      <!-- HUD Header Bar -->
+      <div class="flex flex-wrap items-center justify-between px-4 py-2.5 border-b border-white/10 bg-slate-900/80 gap-3 text-xs">
+        <div class="flex items-center space-x-2.5">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
+          </span>
+          <span class="font-bold text-white tracking-wider uppercase font-mono">3D Living Estate Mansion</span>
+          <span class="text-slate-400">•</span>
+          <span id="hud-target-name" class="font-mono text-indigo-300">Full Estate Overview</span>
+        </div>
+
+        <!-- Center: Quick Focus Specialist Buttons -->
+        <div class="flex items-center space-x-1.5 overflow-x-auto py-1 max-w-full sm:max-w-none text-[11px] font-mono">
+          <button data-focus-worker="all" class="px-2.5 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500/40 transition">Overview</button>
+          <button data-focus-worker="mooji" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">👑 Mooji</button>
+          <button data-focus-worker="cook" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🍳 Remy</button>
+          <button data-focus-worker="nutritionist" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🥗 Sage</button>
+          <button data-focus-worker="gym-instructor" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🏋️ Atlas</button>
+          <button data-focus-worker="financial-advisor" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">📈 Sterling</button>
+          <button data-focus-worker="code-expert" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">💻 Turing</button>
+          <button data-focus-worker="ui-designer" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🎨 Iris</button>
+          <button data-focus-worker="system-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🛡️ Argus</button>
+          <button data-focus-worker="database-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🗄️ Dexter</button>
+          <button data-focus-worker="network-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🌐 Nexus</button>
+          <button data-focus-worker="composer" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🎵 Lyra</button>
+          <button data-focus-worker="spiritual-advisor" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🧘 Bodhi</button>
+          <button data-focus-worker="email-manager" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">📬 Hermes</button>
+          <button data-focus-worker="travel-buddy" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🧭 Marco</button>
+          <button data-focus-worker="domino-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🗄️ Dorian</button>
+          <button data-focus-worker="knowledge-article-author" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">✍️ Quill</button>
+          <button data-focus-worker="knowledge-article-reviewer" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🔍 Verity</button>
+          <button data-focus-worker="knowledge-article-publisher" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">📚 Scribe</button>
+        </div>
+
+        <!-- Right: View Modes & Lighting -->
+        <div class="flex items-center space-x-2">
+          <button id="btn-toggle-lighting" class="px-2.5 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition font-mono text-[11px]" title="Toggle Atmosphere">🌙 Cyber Night</button>
+          
+          <div class="flex items-center rounded-lg border border-white/10 bg-black/40 p-0.5">
+            <button id="btn-mode-split" class="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-600 text-white transition" title="Split View">Split</button>
+            <button id="btn-mode-expanded" class="px-2 py-0.5 rounded text-[10px] font-mono text-slate-400 hover:text-white transition" title="Expanded View">720p</button>
+            <button id="btn-mode-matrix" class="px-2 py-0.5 rounded text-[10px] font-mono text-slate-400 hover:text-white transition" title="Cards Only">Matrix</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canvas Viewport -->
+      <div id="estate-3d-container" class="relative w-full h-[460px] bg-[#080B11] cursor-grab active:cursor-grabbing overflow-hidden">
+        <!-- Overlay Helper Instructions -->
+        <div class="absolute bottom-3 left-4 pointer-events-none z-10 flex items-center space-x-2 text-[10px] font-mono text-slate-400 bg-slate-950/70 px-2.5 py-1 rounded-md border border-white/5 backdrop-blur-md">
+          <span>🖱️ Left-Click: Orbit</span>
+          <span>•</span>
+          <span>Right-Click: Pan</span>
+          <span>•</span>
+          <span>Scroll: Zoom</span>
+          <span>•</span>
+          <span>Click Specialist: Focus</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Specialist Workers Section -->
+    <section aria-label="Specialist Roster">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-2 border-b border-white/10">
+        <div class="flex items-center space-x-2.5">
+          <h3 class="text-base sm:text-lg font-bold text-white tracking-wide uppercase font-sans">Specialist Workers Matrix</h3>
+          <span id="staff-total-badge" class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-800 text-slate-300 border border-white/5 font-semibold">17 Staff</span>
+        </div>
+        <div class="text-xs text-slate-400 font-mono">
+          Auto-synchronized with Obsidian Vault Roster
+        </div>
+      </div>
+
+      <!-- Responsive specialist card grid -->
+      <div id="workers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
+        <!-- Rendered dynamically by app.js with zero flicker -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="border-t border-white/10 bg-slate-950/60 backdrop-blur-md py-4 text-xs font-mono text-slate-400 mt-auto">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
+      <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+        <span class="text-indigo-400 font-semibold">[VAULT: My-Obsidian-Vault]</span>
+        <span>•</span>
+        <span>Stream: <code class="text-slate-300">00-Butler-Dashboard/status.json</code></span>
+        <span>•</span>
+        <span id="connection-pill" class="inline-flex items-center space-x-1.5 text-emerald-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span>Online</span>
+        </span>
+      </div>
+      <div class="text-slate-500">
+        Architecture: Vanilla ES6 + Python 3 Zero-Dep Server • Dela Rosa Estate Systems
+      </div>
+    </div>
+  </footer>
+
+  <!-- Three.js Core & OrbitControls (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <!-- 3D Living Estate Procedural Engine (Lively Simulation) -->
+  <script src="estate3d.js?v=2.2"></script>
+  <!-- Application Logic -->
+  <script src="app.js?v=2.1"></script>
+</body>
+</html>
