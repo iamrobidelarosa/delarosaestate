@@ -1,0 +1,6 @@
+# Static site: the Household Command Center dashboard is plain HTML/CSS/JS
+# (Tailwind and Three.js load from CDNs), so there is no build step.
+# Only the dashboard folder is published, so the rest of the repository
+# (notes, scripts, and the mail folder's .env file) is never served.
+[build]
+  publish = "00-Butler-Dashboard"
