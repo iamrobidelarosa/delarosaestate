@@ -55,6 +55,8 @@
     'database-administrator':{ x: 23, y: 0, z: 23, name: 'Dexter',   role: 'Database Architect',  icon: '🗄️', color: 0x6366f1, initialAction: 'Terrace Brunch' },
     'network-administrator': { x: 29,  y: 0, z: 23, name: 'Nexus',    role: 'Network Engineer',    icon: '🌐', color: 0x38bdf8, initialAction: 'Perimeter Mesh Walk' },
     'composer':             { x: 23,  y: 0, z: -23, name: 'Lyra',     role: 'Composer & Lyricist', icon: '🎵', color: 0xec4899, initialAction: 'Piano Melody & Mint' },
+    'video-creator':        { x: 29,  y: 0, z: -23, name: 'Vega',     role: 'Video Creator',       icon: '🎬', color: 0xf97316, initialAction: 'Storyboarding a Music Video' },
+    'comic-creator':        { x: 17,  y: 0, z: -23, name: 'Panel',    role: 'Comic & Manhua Creator', icon: '📚', color: 0xf472b6, initialAction: 'Planning a Comic Chapter' },
     'spiritual-advisor':    { x: 0,   y: 0, z: -24, name: 'Bodhi',    role: 'Mindfulness Guide',   icon: '🧘', color: 0x14b8a6, initialAction: 'Levitation Breathing' },
     'email-manager':        { x: -4.5, y: 0, z: 3.2, name: 'Hermes',  role: 'Executive Mail Sec',  icon: '📬', color: 0xd97706, initialAction: 'Touring Pantry & Gym' },
     'travel-buddy':         { x: 4.5,  y: 0, z: 3.2, name: 'Marco',   role: 'Travel Buddy & Scout',icon: '🧭', color: 0x10b981, initialAction: 'Scouting Food & Routes' },
