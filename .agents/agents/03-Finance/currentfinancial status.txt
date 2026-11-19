@@ -1,0 +1,41 @@
+Act as my personal financial planner and debt strategist. I am based in the Philippines (currency: PHP / ₱), and today's date is November 2026. Build me a complete, step-by-step debt elimination plan, lump-sum deployment strategy, and 15th/30th payday budget allocation based on the exact figures below.
+
+### 1. INCOME & LUMP-SUM INFLOWS
+- **Monthly Net Salary:** ₱90,000.00 (paid on the 15th and 30th; unequal distribution between cutoffs)
+- **Monthly Work/Internet Reimbursement:** ₱4,300.00 (received every 15th of the month)
+- **Approved Pag-IBIG Loan Net Release:** ₱30,000.00 (Available now; adds ₱1,200/month payroll deduction, or ₱600 per cutoff)
+- **Upcoming 13th-Month Pay:** ₱90,000.00 (Expected late November / December 2026)
+- *Note: My wife has her own separate income and pays her own bills; do not include her finances.*
+
+### 2. ACTIVE DEBTS & LOANS
+**Installment Loans (Fixed Maturity):**
+- **BPI Car Loan:** ₱14,310.00/month | Due: 15th | Matures: January 12, 2027
+- **UB Personal Loan:** ₱8,050.00/month | Due: 1st | Matures: February 1, 2027
+- **Uno Bank Loan:** ₱4,705.00/month | Due: 1st | Matures: November 1, 2027
+- **Tonik Loan:** ₱2,653.90/month | Due: 1st | Matures: November 4, 2027
+- **Pag-IBIG Loan (New):** ₱1,200.00/month | Automatic payroll deduction (₱600/cutoff)
+
+**Short-Term Loans & BNPL (Target for Lump-Sum Payoff):**
+- **Atome Cash Loan:** ₱10,500.00/month total (Split due dates: 1st = ₱5,100; 4th = ₱2,700; 8th = ₱2,700) | Full Settlement Balance: ₱26,674.97
+- **Luvit:** ₱5,523.21/month | Due: 4th | Full Settlement Balance: ₱5,523.21 (1 payment remaining)
+- **Atome Card:** ₱8,405.00/month | Due: 13th | Full Settlement Balance: ₱13,849.07 (3+ payments remaining)
+- **LazCash:** ₱6,733.00/month | Due: 1st | Balance: [Insert exact full settlement amount if available]
+- **LazPay:** ₱4,500.00/month | Due: 16th | Balance: [Insert exact full settlement amount if available]
+
+**Revolving Credit Cards:**
+- **BPI Credit Card:** ₱6,000.00/month current payment | Due: 13th | Outstanding Balance: ₱175,012.95
+- **UB Credit Card:** ₱3,200.00/month current payment | Due: 1st | Outstanding Balance: ₱51,552.00
+
+### 3. FIXED MONTHLY BILLS & LIVING EXPENSES
+- **Meralco (Electricity):** ₱6,000.00/month | Due: 1st
+- **Phone Plan:** ₱5,000.00/month | Due: 1st
+- **Internet:** ₱1,300.00/month | Due: 15th (Covered by the ₱4,300 monthly reimbursement)
+- **Mama's Allowance:** ₱10,500.00/month total (Due: 15th = ₱6,000; 30th = ₱4,500)
+- **Daughter's Allowance:** ₱2,600.00/month | Due: 15th
+- **Food & Groceries:** ₱3,000.00/month
+- **Transportation:** ₱4,000.00/month (Previously charged to credit cards—transition this to cash)
+
+### 4. DELIVERABLES REQUESTED
+1. **Lump-Sum Deployment Plan:** Show the exact order to spend the ₱30,000 Pag-IBIG loan (now) and ₱90,000 13th-month pay (December) to maximize monthly cash flow relief.
+2. **15th & 30th Payday Schedule:** Map every bill, allowance, and debt payment to either the 15th or 30th cutoff based on due dates so no payment is late.
+3. **Month-by-Month Debt Elimination Timeline (Nov 2026 – Nov 2027):** Factor in freed-up cash flow as loans mature (Car Loan in Jan 2027, UB Personal Loan in Feb 2027) and apply a Debt Avalanche strategy to eliminate the remaining credit card balances as fast as possible.

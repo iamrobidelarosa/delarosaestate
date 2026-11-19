@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080B11" />
+  <title>Knowledge Team Room — Dela Rosa Residence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="agent-room.css" />
+</head>
+<body class="agent-room-page" data-room-id="knowledge-team" data-agent-id="knowledge-article-author" data-agent-name="Knowledge Team">
+  <header class="agent-room-topbar">
+    <a class="agent-room-brand" href="index.html">
+      <span class="agent-room-brand-mark" aria-hidden="true">⌂</span>
+      <span>Dela Rosa Residence</span>
+    </a>
+    <a class="dashboard-action-button" href="index.html">← Estate dashboard</a>
+  </header>
+
+  <main class="agent-room-main">
+    <section class="agent-room-hero" aria-labelledby="room-title">
+      <div class="agent-room-avatar" aria-hidden="true">📚</div>
+      <div class="agent-room-hero-copy">
+        <p class="agent-room-eyebrow">Quill · Verity · Scribe · Knowledge workflow room</p>
+        <h1 id="room-title">Knowledge Team workspace</h1>
+        <p>Prepare a focused task for the Author, Reviewer, or Publisher, with the right article template and handoff expectations.</p>
+      </div>
+      <span class="agent-room-session-badge"><span></span> Local session</span>
+    </section>
+
+    <aside class="agent-room-notice" aria-label="Room connection and privacy notice">
+      <strong>Prompts are sent to the selected agent through the local Copilot SDK service.</strong>
+      Conversation history is saved in this browser, and the Copilot SDK keeps session data in your Windows user profile. Remove customer names, email addresses, case numbers, system identifiers, domains, and other confidential details before sending article content.
+    </aside>
+
+    <div class="agent-room-layout">
+      <section class="agent-room-chat" aria-labelledby="room-conversation-title">
+        <header class="agent-room-panel-heading">
+          <div>
+            <p class="agent-room-eyebrow">Author → Reviewer → Publisher</p>
+            <h2 id="room-conversation-title">Knowledge task brief</h2>
+          </div>
+          <button id="room-clear-notes" class="dashboard-action-button" type="button" disabled>Clear notes</button>
+        </header>
+        <div id="room-storage-warning" class="agent-room-storage-warning" role="status" aria-live="polite" hidden></div>
+        <div id="room-conversation" class="agent-room-conversation" role="log" aria-live="polite" aria-relevant="additions">
+          <article class="agent-room-message agent-room-message-agent">
+            <div class="agent-room-message-heading"><strong>Knowledge Team</strong><span>Workflow prompt</span></div>
+            <p>Choose the team role and article type, then add the source facts or draft. Keep public article content free of customer and confidential information.</p>
+          </article>
+        </div>
+        <form id="room-form" class="agent-room-composer">
+          <div class="agent-room-recipient">
+            <label for="room-agent-select">Send task to</label>
+            <select id="room-agent-select">
+              <option value="knowledge-article-author" data-agent-name="Quill">Quill · Author</option>
+              <option value="knowledge-article-reviewer" data-agent-name="Verity">Verity · Reviewer</option>
+              <option value="knowledge-article-publisher" data-agent-name="Scribe">Scribe · Publisher</option>
+            </select>
+          </div>
+          <label for="room-message">Add source facts, draft content, or task details</label>
+          <textarea id="room-message" rows="5" maxlength="20000" placeholder="Choose a workflow task on the right, then add sanitized technical facts or draft content…" required></textarea>
+          <div class="agent-room-composer-actions">
+            <span id="room-character-count">0 / 20000</span>
+            <div class="flex items-center gap-2">
+              <button id="room-copy-brief" class="dashboard-action-button" type="button">Copy brief</button>
+              <button class="dashboard-action-button" type="submit">Save note</button>
+              <button id="room-send-prompt" class="agent-room-submit" type="button" disabled>Send to Quill</button>
+            </div>
+          </div>
+          <p id="room-save-status" class="agent-room-save-status" role="status" aria-live="polite">Sending a prompt contacts the selected Copilot agent; conversation history stays in this browser.</p>
+        </form>
+      </section>
+
+      <aside class="agent-room-guide" aria-labelledby="room-guide-title">
+        <p class="agent-room-eyebrow">Choose a handoff</p>
+        <h2 id="room-guide-title">Who should handle this?</h2>
+        <div class="knowledge-context">
+          <label for="knowledge-article-type">Article template
+            <select id="knowledge-article-type">
+              <option value="Defect">Defect</option>
+              <option value="Troubleshooting">Troubleshooting</option>
+              <option value="FAQ">FAQ</option>
+              <option value="How-to">How-to</option>
+            </select>
+          </label>
+          <label for="knowledge-product">Product and version (optional)
+            <input id="knowledge-product" type="text" maxlength="120" placeholder="Official product name and version" />
+          </label>
+        </div>
+
+        <div class="agent-room-topic-list">
+          <button type="button" class="agent-room-topic" data-room-agent="knowledge-article-author" data-knowledge-task="author">
+            <span aria-hidden="true">✍️</span><span><strong>Quill · Author</strong><small>Draft using the selected template and source facts</small></span>
+          </button>
+          <button type="button" class="agent-room-topic" data-room-agent="knowledge-article-reviewer" data-knowledge-task="reviewer">
+            <span aria-hidden="true">🔍</span><span><strong>Verity · Reviewer</strong><small>Check accuracy and return a clear decision</small></span>
+          </button>
+          <button type="button" class="agent-room-topic" data-room-agent="knowledge-article-publisher" data-knowledge-task="publisher">
+            <span aria-hidden="true">📚</span><span><strong>Scribe · Publisher</strong><small>Run the final customer-facing publish check</small></span>
+          </button>
+        </div>
+        <p class="agent-room-guide-note">Workflow: Author drafts and first-publishes; Reviewer checks technical accuracy and gives detailed rejection feedback; Publisher approves public release or returns the article to draft with detailed reasons.</p>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="agent-room-footer">
+    <a href="index.html">Return to the estate command center</a>
+    <span>Knowledge Team · Browser-local notes</span>
+  </footer>
+
+  <script src="agent-room.js"></script>
+  <script src="knowledge-team.js"></script>
+</body>
+</html>

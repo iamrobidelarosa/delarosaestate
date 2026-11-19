@@ -1,0 +1,541 @@
+/* ==========================================================================
+   Household Command Center — Dark Obsidian Glassmorphism Design System
+   Designer: Iris (@ui-designer) | Engineer: Turing (@code-expert)
+   ========================================================================== */
+
+:root {
+  --bg-base: #080B11;
+  --bg-surface: rgba(17, 24, 39, 0.72);
+  --bg-surface-elevated: rgba(30, 41, 59, 0.85);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(99, 102, 241, 0.35);
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-slate: #94a3b8;
+  --accent-indigo: #6366f1;
+  --accent-purple: #a855f7;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: #f1f5f9;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Obsidian Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080B11;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Ambient Radial Glow Elements */
+.ambient-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Mooji Hero Deck Elevated Card */
+#mooji-deck {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7), 0 0 24px -2px rgba(99, 102, 241, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#mooji-deck:hover {
+  border-color: rgba(99, 102, 241, 0.5);
+  box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.8), 0 0 32px 0 rgba(99, 102, 241, 0.2);
+}
+
+/* Daily notification previews */
+.daily-notifications-panel {
+  box-shadow: 0 18px 48px -16px rgba(0, 0, 0, 0.85), 0 0 32px -8px rgba(99, 102, 241, 0.18);
+}
+
+.notification-count-badge,
+.notification-state {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 9999px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+  font: 600 0.7rem 'JetBrains Mono', monospace;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.7rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.notification-count-badge {
+  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(99, 102, 241, 0.14);
+  color: #c7d2fe;
+}
+
+.dashboard-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  font-size: 0.7rem;
+  font-weight: 700;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.dashboard-action-button:hover:not(:disabled) {
+  border-color: rgba(129, 140, 248, 0.55);
+  background: rgba(99, 102, 241, 0.18);
+  color: #fff;
+}
+
+.dashboard-action-button:focus-visible,
+.dashboard-control-input:focus-visible,
+.dashboard-control-select:focus-visible,
+.notification-dismiss-button:focus-visible {
+  outline: 2px solid #818cf8;
+  outline-offset: 2px;
+}
+
+.dashboard-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.notification-storage-warning {
+  margin-bottom: 1rem;
+  color: #fcd34d;
+  font-size: 0.75rem;
+}
+
+.daily-notification-card {
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1rem;
+  background: linear-gradient(155deg, rgba(30, 41, 59, 0.88), rgba(8, 11, 17, 0.95));
+  box-shadow: 0 8px 24px -14px rgba(0, 0, 0, 0.9);
+}
+
+.notification-daily-bread { border-top: 2px solid #a78bfa; }
+.notification-daily-food { border-top: 2px solid #34d399; }
+.notification-daily-exercise { border-top: 2px solid #38bdf8; }
+
+.notification-card-heading,
+.notification-agent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.notification-agent {
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.notification-card-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.notification-dismiss-button {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.55rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #94a3b8;
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.notification-dismiss-button:hover {
+  border-color: rgba(248, 113, 113, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+  color: #fecaca;
+}
+
+.notification-agent-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  font-size: 1.25rem;
+}
+
+.notification-agent p {
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.notification-agent p span {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.notification-category {
+  display: block;
+  margin-top: 0.15rem;
+  color: #94a3b8;
+  font: 0.65rem 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+}
+
+.notification-state {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(148, 163, 184, 0.1);
+  color: #cbd5e1;
+  font-size: 0.62rem;
+}
+
+.notification-state.ready {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.12);
+  color: #6ee7b7;
+}
+
+.daily-notification-card h3 {
+  margin-top: 1rem;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.notification-summary {
+  margin-top: 0.3rem;
+  color: #aab8ca;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.notification-verse {
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  border-left: 3px solid #a78bfa;
+  border-radius: 0 0.75rem 0.75rem 0;
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.notification-verse p {
+  color: #f5f3ff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.notification-verse cite {
+  display: block;
+  margin-top: 0.45rem;
+  color: #c4b5fd;
+  font: normal 0.7rem 'JetBrains Mono', monospace;
+}
+
+.notification-detail-block {
+  margin-top: 0.85rem;
+}
+
+.notification-duration {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 0.6rem;
+  background: rgba(14, 165, 233, 0.08);
+  color: #bae6fd;
+  font-size: 0.72rem;
+}
+
+.notification-duration span {
+  color: #94a3b8;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+}
+
+.notification-duration strong {
+  color: #7dd3fc;
+  font-size: 0.8rem;
+}
+
+.notification-detail-block h4 {
+  margin-bottom: 0.25rem;
+  color: #cbd5e1;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.notification-detail-block p,
+.notification-detail-block li,
+.notification-meal p,
+.notification-note {
+  color: #b6c2d1;
+  font-size: 0.77rem;
+  line-height: 1.55;
+}
+
+.notification-detail-block ol {
+  display: grid;
+  gap: 0.35rem;
+  padding-left: 1.1rem;
+  list-style: decimal;
+}
+
+.notification-meal-list {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.notification-meal {
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.notification-meal:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.notification-meal span {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #6ee7b7;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.notification-note {
+  margin-top: 0.9rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #8290a3;
+  font-size: 0.68rem;
+}
+
+.notification-loading,
+.notification-error {
+  grid-column: 1 / -1;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+.notification-error {
+  margin-bottom: 1rem;
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fcd34d;
+}
+
+.worker-dashboard-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.dashboard-control-input,
+.dashboard-control-select {
+  min-height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.65rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.dashboard-control-input {
+  width: 100%;
+  max-width: 24rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.dashboard-control-input::placeholder {
+  color: #64748b;
+}
+
+.dashboard-control-select {
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+}
+
+.worker-empty-state {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.65);
+  color: #94a3b8;
+  font-size: 0.85rem;
+}
+
+/* Specialist Worker Cards */
+.worker-card {
+  position: relative;
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+}
+
+.worker-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.7), 0 0 20px -2px rgba(99, 102, 241, 0.15);
+}
+
+/* Dynamic Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+/* Active State (Emerald Glow) */
+.status-badge.active {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+}
+
+/* Waiting State (Amber Breathing) */
+.status-badge.waiting {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+/* Idle State (Muted Slate) */
+.status-badge.idle {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+/* Pulse Keyframes */
+@keyframes pulsePing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 0; }
+  100% { transform: scale(0.95); opacity: 0; }
+}
+
+@keyframes breatheAmber {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.pulse-emerald {
+  animation: pulsePing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.pulse-amber {
+  animation: breatheAmber 1.8s ease-in-out infinite;
+}
+
+/* Domain Pill */
+.domain-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 0.15rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+/* Task Box line-clamp and consistent height */
+.task-box {
+  min-height: 3.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+/* Spin animation for manual sync button */
+.spin-active {
+  animation: spin 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   3D Living Estate Canvas Enhancements
+   ========================================================================== */
+#estate-3d-container {
+  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+#estate-3d-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#estate-3d-wrapper {
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.8), 0 0 28px -4px rgba(99, 102, 241, 0.15);
+}
