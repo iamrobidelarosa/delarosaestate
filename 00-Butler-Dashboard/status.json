@@ -1,14 +1,14 @@
 {
-  "updated_at": "2026-11-19T14:25:00Z",
+  "updated_at": "2026-11-19T15:01:33Z",
   "note": "Estate server is running on http://localhost:8080 with OllamaLocalBridge.",
   "agents": {
     "mooji": {
       "name": "Mooji",
       "role": "Main Butler & Chief of Staff",
-      "status": "waiting",
-      "last_task": "Deployed the RSVP Apps Script endpoint and opened a summary-only PR; waiting for PR review before Netlify activation",
+      "status": "idle",
+      "last_task": "Deployed per-person RSVP details, including attendee, guest names, and after-party response, to the public sheet",
       "last_note": "[[00-Butler-Dashboard/NETLIFY-DEPLOYMENT]]",
-      "timestamp": "2026-11-19T14:25:00Z"
+      "timestamp": "2026-11-19T15:01:33Z"
     },
     "cook": {
       "name": "Remy",
