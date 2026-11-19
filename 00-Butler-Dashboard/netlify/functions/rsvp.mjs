@@ -134,11 +134,9 @@ export const handler = async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: name.trim(),
         attendance,
         guests,
         swimming,
-        message: message.trim() || "—",
       }),
       signal: controller.signal,
     });
