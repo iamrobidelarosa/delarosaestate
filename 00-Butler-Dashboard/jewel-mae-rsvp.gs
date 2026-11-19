@@ -1,6 +1,16 @@
 const RSVP_SPREADSHEET_ID_PROPERTY = "RSVP_SPREADSHEET_ID";
 const RSVP_SUMMARY_SHEET_NAME = "RSVP Summary";
+const RSVP_DETAILS_SHEET_NAME = "RSVP Details";
 const RSVP_SUMMARY_HEADERS = ["Metric", "Count"];
+const RSVP_DETAILS_HEADERS = [
+  "Timestamp",
+  "Attendee Name",
+  "Attendance Status",
+  "Guest Count",
+  "Other Guest Names",
+  "After Party Swimming",
+];
+const RSVP_SUMMARY_ALLOWED_FIELDS = ["attendance", "guests", "swimming"];
 const RSVP_SUMMARY_FIELDS = {
   totalRsvps: "Total RSVPs",
   acceptedRsvps: "Accepted RSVPs",
@@ -8,7 +18,9 @@ const RSVP_SUMMARY_FIELDS = {
   acceptedGuests: "Accepted Guest Count",
   swimmingGuests: "Swimming Guest Count",
 };
-const RSVP_ALLOWED_FIELDS = ["attendance", "guests", "swimming"];
+const RSVP_ALLOWED_FIELDS = ["name", "attendance", "guests", "swimming", "message"];
+const MAX_NAME_LENGTH = 200;
+const MAX_GUEST_NAMES_LENGTH = 2000;
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -18,18 +30,25 @@ function doPost(e) {
     }
 
     const data = JSON.parse(e.postData.contents);
-    if (!isValidSummarySubmission(data)) {
+    const includesDetails = isValidRsvpSubmission(data);
+    if (!includesDetails && !isValidSummarySubmission(data)) {
       throw new Error("Invalid RSVP data.");
     }
 
     lock.waitLock(10000);
-    const sheet = getRsvpSummarySheet();
+    const spreadsheet = getRsvpSpreadsheet();
+    const sheet = getRsvpSummarySheet(spreadsheet);
     const summary = readSummary(sheet);
+    if (includesDetails) {
+      const detailsSheet = getRsvpDetailsSheet(spreadsheet);
+      appendRsvpDetails(detailsSheet, data);
+    }
     addSubmissionToSummary(summary, data);
     writeSummary(sheet, summary);
 
     return jsonResponse({ status: "success" });
   } catch (error) {
+    Logger.log("RSVP submission failed: " + error.message);
     return jsonResponse({ status: "error" });
   } finally {
     if (lock.hasLock()) {
@@ -38,20 +57,37 @@ function doPost(e) {
   }
 }
 
+function isValidRsvpSubmission(data) {
+  return hasExactFields(data, RSVP_ALLOWED_FIELDS) &&
+    typeof data.name === "string" &&
+    data.name.trim().length > 0 &&
+    data.name.length <= MAX_NAME_LENGTH &&
+    isValidResponseValues(data) &&
+    typeof data.message === "string" &&
+    data.message.length <= MAX_GUEST_NAMES_LENGTH;
+}
+
 function isValidSummarySubmission(data) {
+  return hasExactFields(data, RSVP_SUMMARY_ALLOWED_FIELDS) &&
+    isValidResponseValues(data);
+}
+
+function hasExactFields(data, allowedFields) {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     return false;
   }
-
   const keys = Object.keys(data);
-  return keys.length === RSVP_ALLOWED_FIELDS.length &&
-    keys.every((key) => RSVP_ALLOWED_FIELDS.includes(key)) &&
-    ["Joyfully Accepts", "Regretfully Declines"].includes(data.attendance) &&
+  return keys.length === allowedFields.length &&
+    keys.every((key) => allowedFields.includes(key));
+}
+
+function isValidResponseValues(data) {
+  return ["Joyfully Accepts", "Regretfully Declines"].includes(data.attendance) &&
     ["1", "2", "3", "4"].includes(data.guests) &&
     ["Yes, bringing swimwear!", "No, main program only"].includes(data.swimming);
 }
 
-function getRsvpSummarySheet() {
+function getRsvpSpreadsheet() {
   const spreadsheetId = PropertiesService
     .getScriptProperties()
     .getProperty(RSVP_SPREADSHEET_ID_PROPERTY);
@@ -59,12 +95,52 @@ function getRsvpSummarySheet() {
     throw new Error("RSVP spreadsheet ID is not configured.");
   }
 
-  const spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+  return SpreadsheetApp.openById(spreadsheetId);
+}
+
+function getRsvpSummarySheet(spreadsheet) {
   let sheet = spreadsheet.getSheetByName(RSVP_SUMMARY_SHEET_NAME);
   if (!sheet) {
     sheet = spreadsheet.insertSheet(RSVP_SUMMARY_SHEET_NAME);
   }
   return sheet;
+}
+
+function getRsvpDetailsSheet(spreadsheet) {
+  let sheet = spreadsheet.getSheetByName(RSVP_DETAILS_SHEET_NAME);
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(RSVP_DETAILS_SHEET_NAME);
+  }
+
+  const rows = sheet.getDataRange().getValues();
+  if (
+    rows.length === 0 ||
+    (rows.length === 1 && rows[0].every((value) => value === "" || value === null))
+  ) {
+    sheet.getRange(1, 1, 1, RSVP_DETAILS_HEADERS.length)
+      .setValues([RSVP_DETAILS_HEADERS]);
+    return sheet;
+  }
+
+  if (!hasHeaders(rows[0], RSVP_DETAILS_HEADERS)) {
+    throw new Error("RSVP Details has an unrecognized layout; refusing to write to it.");
+  }
+  return sheet;
+}
+
+function appendRsvpDetails(sheet, data) {
+  sheet.appendRow([
+    new Date(),
+    literalCellValue(data.name.trim()),
+    data.attendance,
+    data.guests,
+    literalCellValue(data.message.trim()),
+    data.swimming,
+  ]);
+}
+
+function literalCellValue(value) {
+  return /^[\s]*[=+\-@]/.test(value) ? "'" + value : value;
 }
 
 function emptySummary() {

@@ -10,7 +10,13 @@ const VALID_SUMMARY = {
   swimming: "Yes, bringing swimwear!",
 };
 
-function createAppsScriptHarness(initialSummary) {
+const VALID_RSVP = {
+  name: "Attendee One",
+  ...VALID_SUMMARY,
+  message: "Companion One",
+};
+
+function createAppsScriptHarness(initialSummary, initialDetails) {
   class FakeSheet {
     constructor(values) {
       this.values = values.map((row) => [...row]);
@@ -30,6 +36,10 @@ function createAppsScriptHarness(initialSummary) {
           this.values = values.map((value) => [...value]);
         },
       };
+    }
+
+    appendRow(row) {
+      this.values.push([...row]);
     }
   }
 
@@ -55,6 +65,9 @@ function createAppsScriptHarness(initialSummary) {
   let summarySheet = initialSummary
     ? new FakeSheet(initialSummary)
     : null;
+  let detailsSheet = initialDetails
+    ? new FakeSheet(initialDetails)
+    : null;
   let sheet1Lookups = 0;
   let locked = false;
   const spreadsheet = {
@@ -63,12 +76,18 @@ function createAppsScriptHarness(initialSummary) {
         sheet1Lookups += 1;
         return originalSheet;
       }
-      return name === "RSVP Summary" ? summarySheet : null;
+      if (name === "RSVP Summary") return summarySheet;
+      if (name === "RSVP Details") return detailsSheet;
+      return null;
     },
     insertSheet: (name) => {
-      assert.equal(name, "RSVP Summary");
-      summarySheet = new FakeSheet([[""]]);
-      return summarySheet;
+      if (name === "RSVP Summary") {
+        summarySheet = new FakeSheet([[""]]);
+        return summarySheet;
+      }
+      assert.equal(name, "RSVP Details");
+      detailsSheet = new FakeSheet([[""]]);
+      return detailsSheet;
     },
   };
   const context = {
@@ -83,6 +102,7 @@ function createAppsScriptHarness(initialSummary) {
         },
       }),
     },
+    Logger: { log() {} },
     PropertiesService: {
       getScriptProperties: () => ({
         getProperty: (key) =>
@@ -116,6 +136,7 @@ function createAppsScriptHarness(initialSummary) {
     getOriginalSheetSnapshot: () => originalSheetSnapshot,
     getSheet1Lookups: () => sheet1Lookups,
     getSummarySheet: () => summarySheet,
+    getDetailsSheet: () => detailsSheet,
   };
 }
 
@@ -127,13 +148,11 @@ function summaryCounts(sheet) {
   return Array.from(sheet.values.slice(1), (row) => row[1]);
 }
 
-test("Netlify forwards only non-sensitive RSVP summary fields", async () => {
+test("Netlify forwards the attendee and guest details required by the RSVP sheet", async () => {
   const previousFetch = globalThis.fetch;
   const previousUrl = process.env.JM18_GOOGLE_SCRIPT_URL;
   const payload = {
-    name: "Private Guest Name",
-    ...VALID_SUMMARY,
-    message: "Private companion details",
+    ...VALID_RSVP,
   };
   let forwarded;
 
@@ -156,7 +175,7 @@ test("Netlify forwards only non-sensitive RSVP summary fields", async () => {
     });
 
     assert.equal(response.statusCode, 200);
-    assert.deepEqual(forwarded, VALID_SUMMARY);
+    assert.deepEqual(forwarded, VALID_RSVP);
   } finally {
     globalThis.fetch = previousFetch;
     if (previousUrl === undefined) {
@@ -167,11 +186,11 @@ test("Netlify forwards only non-sensitive RSVP summary fields", async () => {
   }
 });
 
-test("RSVP preserves Sheet1 and creates an aggregate summary tab", () => {
+test("RSVP preserves Sheet1 and writes summary and per-response details to separate tabs", () => {
   const harness = createAppsScriptHarness();
   const { context } = harness;
 
-  const response = submit(context, VALID_SUMMARY);
+  const response = submit(context, VALID_RSVP);
   assert.equal(JSON.parse(response.body).status, "success");
   assert.equal(harness.getSheet1Lookups(), 0);
   assert.equal(
@@ -180,19 +199,51 @@ test("RSVP preserves Sheet1 and creates an aggregate summary tab", () => {
   );
   assert.deepEqual(harness.getSummarySheet().values[0], ["Metric", "Count"]);
   assert.deepEqual(summaryCounts(harness.getSummarySheet()), [1, 1, 0, 2, 2]);
+  assert.deepEqual(harness.getDetailsSheet().values[0], [
+    "Timestamp",
+    "Attendee Name",
+    "Attendance Status",
+    "Guest Count",
+    "Other Guest Names",
+    "After Party Swimming",
+  ]);
+  assert.ok(harness.getDetailsSheet().values[1][0]);
+  assert.deepEqual(harness.getDetailsSheet().values[1].slice(1), [
+    VALID_RSVP.name,
+    VALID_RSVP.attendance,
+    VALID_RSVP.guests,
+    VALID_RSVP.message,
+    VALID_RSVP.swimming,
+  ]);
 
-  const rejected = submit(context, { ...VALID_SUMMARY, name: "Private Guest" });
+  const rejected = submit(context, { ...VALID_RSVP, unexpected: true });
   assert.equal(JSON.parse(rejected.body).status, "error");
   assert.deepEqual(summaryCounts(harness.getSummarySheet()), [1, 1, 0, 2, 2]);
+  assert.equal(harness.getDetailsSheet().values.length, 2);
+});
+
+test("RSVP stores formula-like names and guest details as literal text", () => {
+  const harness = createAppsScriptHarness();
+  const payload = {
+    ...VALID_RSVP,
+    name: "=HYPERLINK(\"https://example.com\")",
+    message: "+SUM(1,1)",
+  };
+  submit(harness.context, payload);
+
+  assert.equal(harness.getDetailsSheet().values[1][1], "'" + payload.name);
+  assert.equal(harness.getDetailsSheet().values[1][4], "'" + payload.message);
 });
 
 test("RSVP initializes an empty summary tab and updates its aggregates", () => {
   const harness = createAppsScriptHarness([[""]]);
-  submit(harness.context, VALID_SUMMARY);
+  submit(harness.context, VALID_RSVP);
   submit(harness.context, {
+    name: "Attendee Two",
     attendance: "Regretfully Declines",
     guests: "1",
     swimming: "No, main program only",
+    message: "",
   });
 
   assert.deepEqual(
@@ -206,13 +257,37 @@ test("RSVP initializes an empty summary tab and updates its aggregates", () => {
   );
 });
 
+test("RSVP accepts the previous aggregate-only payload during deployment", () => {
+  const harness = createAppsScriptHarness();
+  const response = submit(harness.context, VALID_SUMMARY);
+
+  assert.equal(JSON.parse(response.body).status, "success");
+  assert.deepEqual(summaryCounts(harness.getSummarySheet()), [1, 1, 0, 2, 2]);
+  assert.equal(harness.getDetailsSheet(), null);
+});
+
 test("RSVP fails closed on unexpected summary tab contents", () => {
   const harness = createAppsScriptHarness([["Unexpected", "Private Data"]]);
   const before = JSON.stringify(harness.getSummarySheet().values);
-  const response = submit(harness.context, VALID_SUMMARY);
+  const response = submit(harness.context, VALID_RSVP);
 
   assert.equal(JSON.parse(response.body).status, "error");
   assert.equal(JSON.stringify(harness.getSummarySheet().values), before);
+  assert.equal(harness.getDetailsSheet(), null);
+  assert.equal(
+    JSON.stringify(harness.getOriginalSheet().values),
+    harness.getOriginalSheetSnapshot(),
+  );
+});
+
+test("RSVP fails closed when the details tab has an unexpected layout", () => {
+  const unexpectedDetails = [["Unexpected", "Private Data"]];
+  const harness = createAppsScriptHarness(undefined, unexpectedDetails);
+  const before = JSON.stringify(harness.getDetailsSheet().values);
+  const response = submit(harness.context, VALID_RSVP);
+
+  assert.equal(JSON.parse(response.body).status, "error");
+  assert.equal(JSON.stringify(harness.getDetailsSheet().values), before);
   assert.equal(
     JSON.stringify(harness.getOriginalSheet().values),
     harness.getOriginalSheetSnapshot(),
