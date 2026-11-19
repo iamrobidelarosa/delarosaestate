@@ -105,7 +105,23 @@
 
         <!-- Sync Gauge & Manual Trigger -->
         <div class="flex items-center space-x-2.5 pl-2 border-l border-white/10">
-          <button id="btn-manual-sync" title="Trigger instant refresh from status.json" class="group flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/40 text-slate-300 hover:text-white transition-all duration-200 text-xs font-mono">
+          <a href="sterling.html" class="dashboard-action-button" aria-label="Open Sterling's finance room">
+            <span aria-hidden="true">💼</span>
+            <span class="hidden sm:inline">Sterling Room</span>
+          </a>
+          <a href="lyra.html" class="dashboard-action-button" aria-label="Open Lyra's music and video room">
+            <span aria-hidden="true">🎵</span>
+            <span class="hidden lg:inline">Music &amp; Video Room</span>
+          </a>
+          <a href="comic-creator.html" class="dashboard-action-button" aria-label="Open Panel's comic and manhua room">
+            <span aria-hidden="true">📚</span>
+            <span class="hidden lg:inline">Comic Studio</span>
+          </a>
+          <a href="knowledge-team.html" class="dashboard-action-button" aria-label="Open the Knowledge Team room">
+            <span aria-hidden="true">📚</span>
+            <span class="hidden lg:inline">Knowledge Team</span>
+          </a>
+          <button id="btn-manual-sync" title="Refresh worker status and today's notifications" class="group flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-500/40 text-slate-300 hover:text-white transition-all duration-200 text-xs font-mono">
             <svg id="sync-icon" class="w-3.5 h-3.5 transition-transform duration-500 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
             </svg>
@@ -177,31 +193,43 @@
             </p>
           </div>
 
-          <!-- Obsidian Bridge & Quick Link Actions -->
-          <div class="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end justify-between gap-3 w-full lg:w-auto min-w-[200px]">
-            <div class="text-left lg:text-right w-full">
-              <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">Active Artifact</div>
-              <div class="flex items-center lg:justify-end space-x-2">
-                <a id="mooji-wikilink-tag" href="#" class="wikilink-chip" title="Click to launch in Obsidian">
-                  <span class="text-indigo-400 mr-1 font-mono text-xs">[[</span>
-                  <span id="mooji-wikilink-text">AGENTS</span>
-                  <span class="text-indigo-400 ml-1 font-mono text-xs">]]</span>
-                </a>
-              </div>
-            </div>
-
-            <a id="mooji-obsidian-action" href="#" class="inline-flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/30 transition-all duration-200 group">
-              <svg class="w-3.5 h-3.5 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                <polyline points="15 3 21 3 21 9"/>
-                <line x1="10" y1="14" x2="21" y2="3"/>
-              </svg>
-              <span>Open in Obsidian</span>
-            </a>
-          </div>
-
         </div>
       </div>
+    </section>
+
+    <!-- Daily notifications and content previews -->
+    <section id="daily-notifications" aria-labelledby="daily-notifications-title" class="daily-notifications-panel relative overflow-hidden rounded-2xl border border-indigo-500/25 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-indigo-950/35 p-5 sm:p-7 shadow-2xl">
+      <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-indigo-500"></div>
+      <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
+        <div>
+          <div class="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-indigo-300">
+            <span>🔔</span>
+            <span>Daily dispatch</span>
+          </div>
+          <h2 id="daily-notifications-title" class="mt-1 text-xl sm:text-2xl font-black tracking-wide text-white">Today’s notifications</h2>
+          <p id="daily-notifications-date" class="mt-1 text-sm text-slate-400">Loading today’s household preview…</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="daily-notifications-count" class="notification-count-badge">Loading updates</span>
+          <span id="daily-notifications-updated" class="text-[11px] font-mono text-slate-500"></span>
+          <button id="btn-clear-notifications" type="button" class="dashboard-action-button" aria-controls="daily-notifications-grid">
+            Clear previews
+          </button>
+          <button id="btn-restore-notifications" type="button" class="dashboard-action-button" aria-controls="daily-notifications-grid" hidden>
+            Restore previews
+          </button>
+        </div>
+      </header>
+
+      <div id="daily-notifications-error" class="notification-error" role="status" aria-live="polite" hidden></div>
+      <p id="daily-notifications-storage-warning" class="notification-storage-warning" role="status" aria-live="polite" hidden></p>
+      <p id="daily-notifications-clear-status" class="sr-only" role="status" aria-live="polite"></p>
+      <div id="daily-notifications-grid" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="notification-loading">Loading daily bread, food, and exercise previews…</div>
+      </div>
+      <p class="mt-4 text-[11px] leading-relaxed text-slate-500">
+        Clear previews only hides them on this dashboard; the source feed stays unchanged. Food and exercise previews are general starting points; adapt them for your needs and any professional guidance.
+      </p>
     </section>
 
     <!-- 3D Living Estate Canvas Section -->
@@ -232,6 +260,8 @@
           <button data-focus-worker="database-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🗄️ Dexter</button>
           <button data-focus-worker="network-administrator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🌐 Nexus</button>
           <button data-focus-worker="composer" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🎵 Lyra</button>
+          <button data-focus-worker="video-creator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🎬 Vega</button>
+          <button data-focus-worker="comic-creator" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">📚 Panel</button>
           <button data-focus-worker="spiritual-advisor" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🧘 Bodhi</button>
           <button data-focus-worker="email-manager" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">📬 Hermes</button>
           <button data-focus-worker="travel-buddy" class="px-2 py-1 rounded-md bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10 transition">🧭 Marco</button>
@@ -273,17 +303,34 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 gap-2 border-b border-white/10">
         <div class="flex items-center space-x-2.5">
           <h3 class="text-base sm:text-lg font-bold text-white tracking-wide uppercase font-sans">Specialist Workers Matrix</h3>
-          <span id="staff-total-badge" class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-800 text-slate-300 border border-white/5 font-semibold">17 Staff</span>
+          <span id="staff-total-badge" class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-800 text-slate-300 border border-white/5 font-semibold">19 Staff</span>
         </div>
         <div class="text-xs text-slate-400 font-mono">
           Auto-synchronized with Obsidian Vault Roster
         </div>
       </div>
 
+      <div class="worker-dashboard-controls mt-4">
+        <div class="flex flex-1 flex-col sm:flex-row gap-2">
+          <label class="sr-only" for="worker-search">Search specialists</label>
+          <input id="worker-search" class="dashboard-control-input" type="search" placeholder="Search name, role, task…" autocomplete="off" />
+          <label class="sr-only" for="worker-status-filter">Filter specialists by status</label>
+          <select id="worker-status-filter" class="dashboard-control-select">
+            <option value="all">All statuses</option>
+            <option value="active">Active</option>
+            <option value="waiting">Waiting</option>
+            <option value="idle">Idle</option>
+          </select>
+        </div>
+        <button id="btn-reset-worker-filters" type="button" class="dashboard-action-button">Reset filters</button>
+      </div>
+      <p id="worker-results-summary" class="mt-2 text-xs font-mono text-slate-500" role="status" aria-live="polite">Loading specialists…</p>
+
       <!-- Responsive specialist card grid -->
       <div id="workers-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
         <!-- Rendered dynamically by app.js with zero flicker -->
       </div>
+      <p id="workers-empty-state" class="worker-empty-state" hidden>No specialists match those filters. Try a different search or reset the filters.</p>
     </section>
 
   </main>
@@ -294,7 +341,7 @@
       <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
         <span class="text-indigo-400 font-semibold">[VAULT: My-Obsidian-Vault]</span>
         <span>•</span>
-        <span>Stream: <code class="text-slate-300">00-Butler-Dashboard/status.json</code></span>
+        <span>Streams: <code class="text-slate-300">status.json</code> · <code class="text-slate-300">daily-notifications.json</code></span>
         <span>•</span>
         <span id="connection-pill" class="inline-flex items-center space-x-1.5 text-emerald-400">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
@@ -311,8 +358,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <!-- 3D Living Estate Procedural Engine (Lively Simulation) -->
-  <script src="estate3d.js?v=2.2"></script>
+  <script src="estate3d.js?v=2.4"></script>
   <!-- Application Logic -->
-  <script src="app.js?v=2.1"></script>
+  <script src="app.js?v=2.4"></script>
 </body>
 </html>

@@ -1,13 +1,14 @@
 {
-  "updated_at": "2026-11-16T20:58:11-05:00",
+  "updated_at": "2026-11-19T07:31:34-05:00",
+  "note": "Estate server is running on http://localhost:8080 with OllamaLocalBridge.",
   "agents": {
     "mooji": {
       "name": "Mooji",
       "role": "Main Butler & Chief of Staff",
-      "status": "active",
-      "last_task": "Oversaw Iris's mansion redesign and recorded the daily Bible, diet, and exercise briefing baseline",
-      "last_note": "[[04-Dev-and-Design/3d-living-estate-spec]]",
-      "timestamp": "2026-11-16T20:58:11-05:00"
+      "status": "waiting",
+      "last_task": "Paused GitHub push at user's request for manual file upload",
+      "last_note": "[[00-Butler-Dashboard/status.json]]",
+      "timestamp": "2026-11-19T08:08:19-05:00"
     },
     "cook": {
       "name": "Remy",
@@ -20,18 +21,18 @@
     "nutritionist": {
       "name": "Sage",
       "role": "Nutritionist & Macro Specialist",
-      "status": "active",
-      "last_task": "Blending fresh cold-pressed juices and nutrient snacks in the estate pantry for the team",
-      "last_note": "[[AGENTS]]",
-      "timestamp": "2026-11-16T08:42:30-05:00"
+      "status": "idle",
+      "last_task": "Prepared today's general balanced meal plan for the notification dashboard",
+      "last_note": "[[00-Butler-Dashboard/daily-notifications.json]]",
+      "timestamp": "2026-11-16T22:44:09-05:00"
     },
     "gym-instructor": {
       "name": "Atlas",
       "role": "Personal Gym Instructor & Strength Coach",
-      "status": "active",
-      "last_task": "Leading open gym, mobility stretches, and strength circuits for staff at Fitness Arena",
-      "last_note": "[[AGENTS]]",
-      "timestamp": "2026-11-16T08:42:30-05:00"
+      "status": "idle",
+      "last_task": "Prepared today's low-impact exercise routine for the notification dashboard",
+      "last_note": "[[00-Butler-Dashboard/daily-notifications.json]]",
+      "timestamp": "2026-11-16T22:44:09-05:00"
     },
     "financial-advisor": {
       "name": "Sterling",
@@ -53,9 +54,9 @@
       "name": "Iris",
       "role": "UI/UX Designer & Visual Architect",
       "status": "idle",
-      "last_task": "Rebuilt the 3D estate as a connected mansion with distinct rooms, doorways, an entrance, and room-aware navigation",
-      "last_note": "[[04-Dev-and-Design/3d-living-estate-spec]]",
-      "timestamp": "2026-11-16T20:58:11-05:00"
+      "last_task": "Assigned visual-asset design and specification support for Lyra and Vega's music-video work",
+      "last_note": "[[.agents/agents/ui-designer]]",
+      "timestamp": "2026-11-17T08:21:26-05:00"
     },
     "system-administrator": {
       "name": "Argus",
@@ -85,17 +86,33 @@
       "name": "Lyra",
       "role": "Composer & Lyricist",
       "status": "idle",
-      "last_task": "Strolling through the gardens humming new melodies, picking fresh mint with Sage",
-      "last_note": "[[AGENTS]]",
-      "timestamp": "2026-11-16T08:42:30-05:00"
+      "last_task": "Expanded the studio for original music, video collaboration with Vega, and visual assets from Iris",
+      "last_note": "[[00-Butler-Dashboard/lyra.html]]",
+      "timestamp": "2026-11-17T08:21:26-05:00"
+    },
+    "video-creator": {
+      "name": "Vega",
+      "role": "Video Creation Specialist",
+      "status": "idle",
+      "last_task": "Ready to develop original video concepts, storyboards, shot lists, captions, and edit handoffs with Lyra and Iris",
+      "last_note": "[[.agents/agents/video-creator]]",
+      "timestamp": "2026-11-17T08:21:26-05:00"
+    },
+    "comic-creator": {
+      "name": "Panel",
+      "role": "Comic & Manhua Creator",
+      "status": "idle",
+      "last_task": "Ready to develop original comic and manhua concepts, series bibles, chapter scripts, panel breakdowns, and continuity notes",
+      "last_note": "[[.agents/agents/comic-creator]]",
+      "timestamp": "2026-11-17T09:13:15-05:00"
     },
     "spiritual-advisor": {
       "name": "Bodhi",
       "role": "Spiritual Advisor & Mindfulness Guide",
       "status": "idle",
-      "last_task": "Welcoming staff in the Zen Sanctuary with warm herbal infusions and mindful breathing",
-      "last_note": "[[AGENTS]]",
-      "timestamp": "2026-11-16T08:42:30-05:00"
+      "last_task": "Prepared today's Bible verse and homily for the notification dashboard",
+      "last_note": "[[00-Butler-Dashboard/daily-notifications.json]]",
+      "timestamp": "2026-11-16T22:44:09-05:00"
     },
     "email-manager": {
       "name": "Hermes",

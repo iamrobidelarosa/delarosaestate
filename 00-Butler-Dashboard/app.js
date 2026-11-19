@@ -1,6 +1,6 @@
 /**
  * Household Command Center — Application Controller
- * High-performance ES6 real-time polling engine & Obsidian vault bridge.
+ * Real-time household polling and specialist room navigation.
  * Author: Turing (@code-expert) | Design: Iris (@ui-designer)
  */
 
@@ -8,9 +8,9 @@
   'use strict';
 
   // --- Configuration ---
-  const VAULT_NAME = 'My-Obsidian-Vault';
   const STATUS_ENDPOINT = 'status.json';
   const POLL_INTERVAL_SECONDS = 3;
+  const DISMISSED_NOTIFICATIONS_KEY = 'estate-dashboard-dismissed-notifications';
 
   // --- Worker Roster Metadata (Fixed domain mapping & avatar icons) ---
   const WORKER_ROSTER = [
@@ -95,6 +95,22 @@
       accent: 'pink'
     },
     {
+      key: 'video-creator',
+      defaultName: 'Vega',
+      defaultRole: 'Video Creation Specialist',
+      domain: '05-Music-Studio/',
+      icon: '🎬',
+      accent: 'purple'
+    },
+    {
+      key: 'comic-creator',
+      defaultName: 'Panel',
+      defaultRole: 'Comic & Manhua Creator',
+      domain: '04-Dev-and-Design/',
+      icon: '📚',
+      accent: 'rose'
+    },
+    {
       key: 'spiritual-advisor',
       defaultName: 'Bodhi',
       defaultRole: 'Spiritual Advisor & Mindfulness Guide',
@@ -152,32 +168,27 @@
     }
   ];
 
+  const SPECIALIST_ROOMS = {
+    'financial-advisor': { href: 'sterling.html', label: 'Finance room' },
+    'composer': { href: 'lyra.html', label: 'Music room' },
+    'video-creator': { href: 'lyra.html', label: 'Music & Video' },
+    'comic-creator': { href: 'comic-creator.html', label: 'Comic studio' },
+    'knowledge-article-author': { href: 'knowledge-team.html', label: 'Team room' },
+    'knowledge-article-reviewer': { href: 'knowledge-team.html', label: 'Team room' },
+    'knowledge-article-publisher': { href: 'knowledge-team.html', label: 'Team room' }
+  };
+
   // --- Application State ---
   let lastRawPayload = null;
+  let lastNotificationPayload = null;
+  let lastNotificationData = null;
+  let dismissedNotificationState = { date: '', ids: [] };
   let countdownRemaining = POLL_INTERVAL_SECONDS;
   let isFetching = false;
+  let isFetchingNotifications = false;
   let countdownTimer = null;
 
   // --- Utilities ---
-
-  /**
-   * Generates native Obsidian URI from a wikilink string.
-   */
-  function resolveObsidianUri(wikilink) {
-    if (!wikilink) return '#';
-    const clean = wikilink.replace(/\[\[|\]\]/g, '').trim();
-    return `obsidian://open?vault=${encodeURIComponent(VAULT_NAME)}&file=${encodeURIComponent(clean)}`;
-  }
-
-  /**
-   * Extracts clean display text from a wikilink.
-   */
-  function cleanWikilinkDisplay(wikilink) {
-    if (!wikilink) return 'None';
-    const clean = wikilink.replace(/\[\[|\]\]/g, '').trim();
-    const parts = clean.split('/');
-    return parts[parts.length - 1];
-  }
 
   /**
    * Computes human-friendly relative time (e.g., "just now", "2m ago").
@@ -284,9 +295,6 @@
     const nameEl = document.getElementById('mooji-name');
     const taskEl = document.getElementById('mooji-task');
     const updatedEl = document.getElementById('mooji-updated-time');
-    const wikilinkTag = document.getElementById('mooji-wikilink-tag');
-    const wikilinkText = document.getElementById('mooji-wikilink-text');
-    const obsidianAction = document.getElementById('mooji-obsidian-action');
     const badgeEl = document.getElementById('mooji-badge');
     const statusTextEl = document.getElementById('mooji-status-text');
 
@@ -296,11 +304,6 @@
       updatedEl.textContent = `Updated ${formatRelativeTime(mooji.timestamp)}`;
       updatedEl.title = mooji.timestamp || '';
     }
-
-    const uri = resolveObsidianUri(mooji.last_note);
-    if (wikilinkTag) wikilinkTag.href = uri;
-    if (wikilinkText) wikilinkText.textContent = cleanWikilinkDisplay(mooji.last_note);
-    if (obsidianAction) obsidianAction.href = uri;
 
     const s = (mooji.status || 'idle').toLowerCase();
     if (badgeEl && statusTextEl) {
@@ -328,14 +331,16 @@
       const role = data.role || worker.defaultRole;
       const status = data.status || 'idle';
       const lastTask = data.last_task || 'Awaiting task allocation.';
-      const lastNote = data.last_note || '[[AGENTS]]';
       const timestamp = data.timestamp || '';
-      const obsidianUri = resolveObsidianUri(lastNote);
-      const cleanNoteName = cleanWikilinkDisplay(lastNote);
       const relativeTime = formatRelativeTime(timestamp);
+      const searchableText = [name, role, status, lastTask, worker.domain].join(' ');
+      const room = SPECIALIST_ROOMS[worker.key];
+      const specialistAction = room
+        ? `<a href="${room.href}" class="dashboard-action-button" aria-label="Open ${escapeHtml(name)} room">${escapeHtml(room.label)}</a>`
+        : '';
 
       return `
-        <article class="worker-card group" data-worker="${worker.key}">
+        <article class="worker-card group" data-worker="${worker.key}" data-status="${escapeHtml(String(status).toLowerCase())}" data-search="${escapeHtml(searchableText.toLowerCase())}">
           <!-- Top Row: Avatar, Identity, Status -->
           <div>
             <div class="flex items-start justify-between gap-3 mb-2.5">
@@ -345,10 +350,10 @@
                 </div>
                 <div>
                   <h4 class="text-sm font-bold text-white tracking-wide flex items-center gap-1.5">
-                    ${name}
+                    ${escapeHtml(name)}
                   </h4>
                   <p class="text-[11px] text-slate-400 font-medium leading-tight line-clamp-1">
-                    ${role}
+                    ${escapeHtml(role)}
                   </p>
                 </div>
               </div>
@@ -360,7 +365,7 @@
             <!-- Domain Pill -->
             <div class="mb-3">
               <span class="domain-pill" title="Obsidian Domain Workspace">
-                ${worker.domain}
+                ${escapeHtml(worker.domain)}
               </span>
             </div>
 
@@ -373,23 +378,10 @@
             </div>
           </div>
 
-          <!-- Bottom Row: Obsidian Wikilink & Relative Time -->
+          <!-- Bottom Row: Specialist Action & Relative Time -->
           <div class="pt-3 border-t border-white/5 flex items-center justify-between gap-2 mt-auto">
-            <div class="flex items-center space-x-1.5 min-w-0">
-              <a href="${obsidianUri}" class="wikilink-chip" title="Open note [[${cleanNoteName}]] in Obsidian">
-                <span class="text-indigo-400 text-[10px]">[[</span>
-                <span class="truncate">${cleanNoteName}</span>
-                <span class="text-indigo-400 text-[10px]">]]</span>
-              </a>
-              <a href="${obsidianUri}" class="obsidian-link-btn" title="Open in Obsidian Vault" aria-label="Open in Obsidian">
-                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                  <polyline points="15 3 21 3 21 9"/>
-                  <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-              </a>
-            </div>
-            <span class="text-[10px] font-mono text-slate-500 flex-shrink-0" title="${timestamp}">
+            ${specialistAction}
+            <span class="text-[10px] font-mono text-slate-500 flex-shrink-0" title="${escapeHtml(timestamp)}">
               ${relativeTime}
             </span>
           </div>
@@ -400,6 +392,7 @@
     const staffTotalEl = document.getElementById('staff-total-badge');
     if (staffTotalEl) staffTotalEl.textContent = `${WORKER_ROSTER.length} Staff`;
     gridEl.innerHTML = cardsHtml;
+    applyWorkerFilters();
   }
 
   /**
@@ -413,6 +406,267 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  function applyWorkerFilters() {
+    const searchEl = document.getElementById('worker-search');
+    const statusEl = document.getElementById('worker-status-filter');
+    const summaryEl = document.getElementById('worker-results-summary');
+    const emptyEl = document.getElementById('workers-empty-state');
+    const cards = Array.from(document.querySelectorAll('.worker-card'));
+    const query = searchEl ? searchEl.value.trim().toLowerCase() : '';
+    const statusFilter = statusEl ? statusEl.value : 'all';
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const matchesSearch = (card.getAttribute('data-search') || '').includes(query);
+      const matchesStatus = statusFilter === 'all' || card.getAttribute('data-status') === statusFilter;
+      card.hidden = !matchesSearch || !matchesStatus;
+      if (!card.hidden) visibleCount++;
+    });
+
+    if (summaryEl) {
+      summaryEl.textContent = cards.length
+        ? `Showing ${visibleCount} of ${cards.length} specialists.`
+        : 'No specialists loaded.';
+    }
+    if (emptyEl) emptyEl.hidden = visibleCount !== 0 || cards.length === 0;
+  }
+
+  function setNotificationStorageWarning(message) {
+    const warningEl = document.getElementById('daily-notifications-storage-warning');
+    if (!warningEl) return;
+    warningEl.textContent = message;
+    warningEl.hidden = !message;
+  }
+
+  function loadDismissedNotifications() {
+    try {
+      const saved = window.localStorage.getItem(DISMISSED_NOTIFICATIONS_KEY);
+      if (!saved) return;
+
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed.date === 'string' && Array.isArray(parsed.ids) &&
+          parsed.ids.every(id => typeof id === 'string')) {
+        dismissedNotificationState = {
+          date: parsed.date,
+          ids: Array.from(new Set(parsed.ids))
+        };
+        return;
+      }
+
+      throw new Error('Saved dismissal data has an invalid format.');
+    } catch (error) {
+      console.warn('Could not load cleared notification previews:', error.message);
+      setNotificationStorageWarning('Your browser could not restore saved preview settings. You can still clear previews for this visit.');
+    }
+  }
+
+  function saveDismissedNotifications() {
+    try {
+      window.localStorage.setItem(DISMISSED_NOTIFICATIONS_KEY, JSON.stringify(dismissedNotificationState));
+      setNotificationStorageWarning('');
+    } catch (error) {
+      console.warn('Could not save cleared notification previews:', error.message);
+      setNotificationStorageWarning('Your browser could not save this change. Cleared previews may return after you leave or refresh the dashboard.');
+    }
+  }
+
+  function renderNotificationDetails(notification) {
+    if (notification.kind === 'daily-bread') {
+      return `
+        <blockquote class="notification-verse">
+          <p>“${escapeHtml(notification.verse)}”</p>
+          <cite>${escapeHtml(notification.reference)} · ${escapeHtml(notification.translation)}</cite>
+        </blockquote>
+        <div class="notification-detail-block">
+          <h4>Today’s reflection</h4>
+          <p>${escapeHtml(notification.homily)}</p>
+        </div>`;
+    }
+
+    if (notification.kind === 'daily-food') {
+      if (!Array.isArray(notification.meals)) {
+        throw new Error(`Food notification "${notification.id}" is missing its meals.`);
+      }
+
+      return `
+        <div class="notification-meal-list">
+          ${notification.meals.map(meal => `
+            <div class="notification-meal">
+              <span>${escapeHtml(meal.label)}</span>
+              <p>${escapeHtml(meal.text)}</p>
+            </div>`).join('')}
+        </div>
+        <p class="notification-note">${escapeHtml(notification.note)}</p>`;
+    }
+
+    if (notification.kind === 'daily-exercise') {
+      if (!Array.isArray(notification.routine)) {
+        throw new Error(`Exercise notification "${notification.id}" is missing its routine.`);
+      }
+
+      return `
+        <div class="notification-duration"><span>Duration</span><strong>${escapeHtml(notification.duration)}</strong></div>
+        <div class="notification-detail-block">
+          <h4>Warm-up</h4>
+          <p>${escapeHtml(notification.warmup)}</p>
+        </div>
+        <div class="notification-detail-block">
+          <h4>Routine</h4>
+          <ol>${notification.routine.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ol>
+        </div>
+        <div class="notification-detail-block">
+          <h4>Cool-down</h4>
+          <p>${escapeHtml(notification.cooldown)}</p>
+        </div>
+        <p class="notification-note">${escapeHtml(notification.note)}</p>`;
+    }
+
+    throw new Error(`Unsupported daily notification type: ${notification.kind || 'unknown'}`);
+  }
+
+  function renderNotificationCard(notification) {
+    const status = (notification.status || 'ready').toLowerCase();
+    return `
+      <article class="daily-notification-card notification-${escapeHtml(notification.kind)}" data-notification-id="${escapeHtml(notification.id)}">
+        <div class="notification-card-heading">
+          <div class="notification-agent">
+            <span class="notification-agent-icon">${escapeHtml(notification.icon)}</span>
+            <div>
+              <p>${escapeHtml(notification.source)} <span>· ${escapeHtml(notification.role)}</span></p>
+              <span class="notification-category">${escapeHtml(notification.kind.replace('daily-', '').replace('-', ' '))}</span>
+            </div>
+          </div>
+          <div class="notification-card-actions">
+            <span class="notification-state ${status === 'ready' ? 'ready' : ''}">${escapeHtml(status)}</span>
+            <button type="button" class="notification-dismiss-button" data-dismiss-notification="${escapeHtml(notification.id)}" aria-label="Clear ${escapeHtml(notification.title)} preview" title="Clear this preview">×</button>
+          </div>
+        </div>
+        <h3>${escapeHtml(notification.title)}</h3>
+        <p class="notification-summary">${escapeHtml(notification.summary)}</p>
+        ${renderNotificationDetails(notification)}
+      </article>`;
+  }
+
+  function renderDailyNotifications(data) {
+    if (!data || !Array.isArray(data.notifications)) {
+      throw new Error('The daily notification feed must contain a notifications list.');
+    }
+    if (data.notifications.some(notification => !notification || typeof notification.id !== 'string' || !notification.id.trim())) {
+      throw new Error('Every daily notification must have a non-empty ID.');
+    }
+
+    const dateEl = document.getElementById('daily-notifications-date');
+    const countEl = document.getElementById('daily-notifications-count');
+    const updatedEl = document.getElementById('daily-notifications-updated');
+    const gridEl = document.getElementById('daily-notifications-grid');
+    const errorEl = document.getElementById('daily-notifications-error');
+    if (!gridEl) return;
+
+    const currentDate = data.date || 'Daily briefing';
+    if (dismissedNotificationState.date !== currentDate) {
+      dismissedNotificationState = { date: currentDate, ids: [] };
+    }
+
+    const dismissedIds = new Set(dismissedNotificationState.ids);
+    const visibleNotifications = data.notifications.filter(notification => !dismissedIds.has(notification.id));
+    const hiddenCount = data.notifications.length - visibleNotifications.length;
+    const clearButton = document.getElementById('btn-clear-notifications');
+    const restoreButton = document.getElementById('btn-restore-notifications');
+
+    if (dateEl) dateEl.textContent = currentDate;
+    if (countEl) {
+      countEl.textContent = hiddenCount
+        ? `${visibleNotifications.length} visible · ${hiddenCount} cleared`
+        : `${visibleNotifications.length} ${visibleNotifications.length === 1 ? 'update' : 'updates'} ready`;
+    }
+    if (updatedEl) updatedEl.textContent = data.updated_at ? `Updated ${formatRelativeTime(data.updated_at)}` : '';
+    if (clearButton) clearButton.disabled = visibleNotifications.length === 0;
+    if (restoreButton) restoreButton.hidden = hiddenCount === 0;
+    gridEl.innerHTML = visibleNotifications.length
+      ? visibleNotifications.map(renderNotificationCard).join('')
+      : data.notifications.length
+        ? '<p class="notification-loading">All previews are cleared. Use Restore previews to show them again.</p>'
+        : '<p class="notification-loading">No daily notifications are available yet.</p>';
+    if (errorEl) {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+  }
+
+  function dismissDailyNotification(notificationId) {
+    if (!lastNotificationData) return;
+
+    const currentDate = lastNotificationData.date || 'Daily briefing';
+    if (dismissedNotificationState.date !== currentDate) {
+      dismissedNotificationState = { date: currentDate, ids: [] };
+    }
+
+    const currentIds = lastNotificationData.notifications.map(notification => notification.id);
+    const dismissedIds = new Set(dismissedNotificationState.ids);
+    const idsToDismiss = notificationId
+      ? currentIds.filter(id => id === notificationId)
+      : currentIds.filter(id => !dismissedIds.has(id));
+    if (!idsToDismiss.length) return;
+
+    idsToDismiss.forEach(id => dismissedIds.add(id));
+    dismissedNotificationState.ids = Array.from(dismissedIds);
+    saveDismissedNotifications();
+    renderDailyNotifications(lastNotificationData);
+
+    const statusEl = document.getElementById('daily-notifications-clear-status');
+    if (statusEl) {
+      statusEl.textContent = notificationId
+        ? 'Preview cleared. Use Restore previews to bring it back.'
+        : `${idsToDismiss.length} previews cleared. The source feed was not changed.`;
+    }
+  }
+
+  function restoreDailyNotifications() {
+    if (!lastNotificationData || !dismissedNotificationState.ids.length) return;
+
+    dismissedNotificationState = {
+      date: lastNotificationData.date || 'Daily briefing',
+      ids: []
+    };
+    saveDismissedNotifications();
+    renderDailyNotifications(lastNotificationData);
+
+    const statusEl = document.getElementById('daily-notifications-clear-status');
+    if (statusEl) statusEl.textContent = 'Daily previews restored.';
+  }
+
+  async function fetchDailyNotifications() {
+    if (isFetchingNotifications) return;
+    isFetchingNotifications = true;
+
+    const errorEl = document.getElementById('daily-notifications-error');
+    try {
+      const response = await fetch(`daily-notifications.json?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text = await response.text();
+      if (text !== lastNotificationPayload) {
+        const data = JSON.parse(text);
+        lastNotificationData = data;
+        renderDailyNotifications(data);
+        lastNotificationPayload = text;
+      }
+    } catch (err) {
+      console.warn('Daily notification poll warning:', err.message);
+      if (errorEl) {
+        errorEl.textContent = `Daily previews could not be loaded: ${err.message}`;
+        errorEl.hidden = false;
+      }
+    } finally {
+      isFetchingNotifications = false;
+    }
   }
 
   // --- Core Polling Engine ---
@@ -520,6 +774,7 @@
       updateCountdownDisplay();
       if (countdownRemaining === 0) {
         fetchStatus(false);
+        fetchDailyNotifications();
       }
     }, 1000);
   }
@@ -528,12 +783,50 @@
   function init() {
     updateLiveClock();
     setInterval(updateLiveClock, 1000);
+    loadDismissedNotifications();
 
     const syncBtn = document.getElementById('btn-manual-sync');
     if (syncBtn) {
       syncBtn.addEventListener('click', () => {
         countdownRemaining = POLL_INTERVAL_SECONDS;
         fetchStatus(true);
+        fetchDailyNotifications();
+      });
+    }
+
+    const clearNotificationsBtn = document.getElementById('btn-clear-notifications');
+    if (clearNotificationsBtn) {
+      clearNotificationsBtn.addEventListener('click', () => dismissDailyNotification(null));
+    }
+
+    const restoreNotificationsBtn = document.getElementById('btn-restore-notifications');
+    if (restoreNotificationsBtn) {
+      restoreNotificationsBtn.addEventListener('click', restoreDailyNotifications);
+    }
+
+    const notificationsGrid = document.getElementById('daily-notifications-grid');
+    if (notificationsGrid) {
+      notificationsGrid.addEventListener('click', event => {
+        const dismissButton = event.target.closest('[data-dismiss-notification]');
+        if (dismissButton) {
+          dismissDailyNotification(dismissButton.getAttribute('data-dismiss-notification'));
+        }
+      });
+    }
+
+    const workerSearch = document.getElementById('worker-search');
+    if (workerSearch) workerSearch.addEventListener('input', applyWorkerFilters);
+
+    const workerStatusFilter = document.getElementById('worker-status-filter');
+    if (workerStatusFilter) workerStatusFilter.addEventListener('change', applyWorkerFilters);
+
+    const resetWorkerFiltersBtn = document.getElementById('btn-reset-worker-filters');
+    if (resetWorkerFiltersBtn) {
+      resetWorkerFiltersBtn.addEventListener('click', () => {
+        if (workerSearch) workerSearch.value = '';
+        if (workerStatusFilter) workerStatusFilter.value = 'all';
+        applyWorkerFilters();
+        if (workerSearch) workerSearch.focus();
       });
     }
 
@@ -552,6 +845,7 @@
 
     // Initial fetch
     fetchStatus(false);
+    fetchDailyNotifications();
     startCountdownTimer();
   }
 
